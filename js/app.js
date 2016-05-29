@@ -6,9 +6,15 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = -100;
-    this.y = Math.floor((Math.random() * 235) + 1);
-    this.speed = 100;
+
+    var yMax = 235; // end position where Enemies can appear/move
+    var yMin = 40; // start position where Enemies can appear/move
+    this.x = -100; // start enemies out of field
+    this.y = Math.floor((Math.random() * yMax) + yMin);
+
+    this.speedMax = 60; // max speed the enemies can move
+    this.speedMin = 20;
+    this.speed = Math.floor((Math.random() * this.speedMax) + this.speedMin);
 };
 
 // Update the enemy's position, required method for game
@@ -18,6 +24,14 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x = this.x + this.speed * dt;
+    // delete Enemy objects once they move out of the field
+    var xMax = 400; // rightmost end of field
+
+    // Re-initiate enemy's position once it moves out of the field.
+    if ( this.x > xMax ) {
+        this.x = -100;
+        this.speed = Math.floor((Math.random() * this.speedMax) + this.speedMin);
+    }
 
 };
 
@@ -34,11 +48,19 @@ Enemy.prototype.render = function() {
 var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 0;
-    this.y = 400;
+    this.y = 435;
     this.speed = 10;
 };
 
 Player.prototype.update = function(dt) {
+
+    //TODO:
+    /* Handle Collisions
+       If player collides with an enemy, send player to start of field.
+     */
+    var collisionOffset = 40;
+
+
 
 };
 
@@ -47,27 +69,30 @@ Player.prototype.render = function() {
 };
 
 Player.prototype.handleInput = function(key) {
-    var stride = 40;
 
+    var stride = 40; // pixels to displace each time player moves
+
+    // move player based on keyboard keys, and only allow player
+    // to move inside of the field.
     switch(key){
         case 'left':
             if( this.x > 0 ) {
-                this.x = this.x - stride;
+                this.x -= stride;
             }
             break;
         case 'right':
             if (this.x < 400 ) {
-                this.x = this.x + stride;
+                this.x += stride;
             }
             break;
         case 'up':
             if( this.y > 0  ) {
-                this.y = this.y - stride;
+                this.y -= stride;
             }
             break;
         case 'down':
-            if( this.y < 400) {
-                this.y = this.y + stride;
+            if( this.y < 395) {
+                this.y += stride;
             }
             break;
     }
@@ -75,6 +100,12 @@ Player.prototype.handleInput = function(key) {
 
 
 };
+
+
+// TODO: create a Gem class and make gems appear in the field.
+
+// TODO: create a scoring system, so that the player gets points when he collects gems,
+//       but looses points when he collides with an enemy
 
 
 // Now instantiate your objects.
