@@ -38,15 +38,12 @@ Enemy.prototype.update = function(dt) {
     }
 
     // Handle Collisions
-    var collisionOffset = 35;
+    var collisionOffset = 33.3;
     if( Math.abs(player.x - this.x) < collisionOffset &&
             Math.abs(player.y - this.y) < collisionOffset){
-        console.log("A collision happened");
+        //console.log("a collision happened!");
         player.restart(); // returns player to initial position and lowers its score
     }
-
-
-
 
 };
 
@@ -69,6 +66,14 @@ var Player = function() {
 
 Player.prototype.update = function(dt) {
 
+    // reset game if player reaches the water
+    var delay = 500; // 0.5 sec
+    if( this.y < 100 ){
+        console.log("REACHED GOAL")
+        setTimeout(function() {
+            player.restart();
+        }, delay);
+    }
 
 };
 
@@ -82,6 +87,7 @@ Player.prototype.restart = function() {
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+
 
 Player.prototype.handleInput = function(key) {
 
@@ -114,7 +120,12 @@ Player.prototype.handleInput = function(key) {
 };
 
 
-// TODO: create a Gem class and make gems appear in the field.
+var Gem = function() {
+    this.sprite = 'images/char-boy.png';
+    this.x = 0;
+    this.y = 435;
+    this.speed = 10;
+};
 
 
 // TODO: create a scoring system, so that the player gets points when he collects gems,
