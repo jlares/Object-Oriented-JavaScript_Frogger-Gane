@@ -68,7 +68,7 @@ Player.prototype.update = function(dt) {
 
     // reset game if player reaches the water
     var delay = 500; // 0.5 sec
-    if( this.y < 100 ){
+    if( this.y < 10 ){
         console.log("REACHED GOAL")
         setTimeout(function() {
             player.restart();
@@ -119,12 +119,53 @@ Player.prototype.handleInput = function(key) {
 
 };
 
-
+// Gem class
 var Gem = function() {
-    this.sprite = 'images/char-boy.png';
-    this.x = 0;
-    this.y = 435;
-    this.speed = 10;
+
+    var yMax = 235; // end position where Enemies can appear/move
+    var yMin = 40; // start position where Enemies can appear/move
+    var xMin = 0;
+    var xMax = 400;
+    this.x = Math.floor((Math.random() * yMax) + yMin);
+    this.y = Math.floor((Math.random() * yMax) + yMin);
+
+};
+
+Gem.prototype.update = function() {
+
+    // Handle pickups
+    var offsetPickup = 35;
+    if( Math.abs( this.x - player.x) < offsetPickup && Math.abs( this.y - player.y) < offsetPickup){
+        console.log("Just picked up a Gem");
+        this.x = -100; // remove from field
+        delete this;
+    }
+
+};
+
+
+// Green Gem subclass
+var greenGem = function(){
+    Gem.call(this);
+    this.sprite = 'images/gem-green.png';
+};
+
+greenGem.prototype = Object.create(Gem.prototype);
+greenGem.prototype.constructor = greenGem;
+greenGem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+// Blue Gem subclass
+var blueGem = function(){
+    Gem.call(this);
+    this.sprite = 'images/gem-blue.png';
+};
+
+blueGem.prototype = Object.create(Gem.prototype);
+blueGem.prototype.constructor = blueGem;
+blueGem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 
@@ -136,11 +177,21 @@ var Gem = function() {
 
 // Project instruction: Place all enemy objects in an array called allEnemies
 var allEnemies = [];
-for(var i = 0; i < 2; i++){
+for(var i = 0; i < 1; i++){
     allEnemies.push(new Enemy(i));
 }
-// Project instruction: Place the player object in a variable called player
+
 var player = new Player();
+
+var allGems = [];
+for(var i = 0; i < 2; i++){
+    allGems.push(new greenGem(i));
+}
+for( var i = 0; i < 1; i++ ){
+    allGems.push(new blueGem(i));
+}
+
+
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
