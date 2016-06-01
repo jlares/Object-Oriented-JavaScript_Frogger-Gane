@@ -62,6 +62,7 @@ var Player = function() {
     this.x = 0;
     this.y = 435;
     this.speed = 10;
+    this.score = 0;
 };
 
 Player.prototype.update = function(dt) {
@@ -138,6 +139,7 @@ Gem.prototype.update = function() {
     if( Math.abs( this.x - player.x) < offsetPickup && Math.abs( this.y - player.y) < offsetPickup){
         console.log("Just picked up a Gem");
         this.x = -100; // remove from field
+        increaseScore(this.value);
         delete this;
     }
 
@@ -148,6 +150,7 @@ Gem.prototype.update = function() {
 var greenGem = function(){
     Gem.call(this);
     this.sprite = 'images/gem-green.png';
+    this.value = 5; // to be used with score()
 };
 
 greenGem.prototype = Object.create(Gem.prototype);
@@ -160,6 +163,7 @@ greenGem.prototype.render = function() {
 var blueGem = function(){
     Gem.call(this);
     this.sprite = 'images/gem-blue.png';
+    this.value = 10;  // to be used with score()
 };
 
 blueGem.prototype = Object.create(Gem.prototype);
@@ -169,9 +173,10 @@ blueGem.prototype.render = function() {
 };
 
 
-// TODO: create a scoring system, so that the player gets points when he collects gems,
-//       but looses points when he collides with an enemy
-
+var increaseScore = function(pts) {
+    player.score += pts;
+    console.log(player.score);
+}
 
 /* Instantiating Game Objects */
 
