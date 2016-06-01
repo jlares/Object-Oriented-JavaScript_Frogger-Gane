@@ -13,8 +13,8 @@ var Enemy = function() {
     // start enemies position at random, but only in the street
     this.y = Math.floor((Math.random() * yMax) + yMin);
     // make sure that enemy vertical position does not overlap
-    this.speedMax = 20; // max speed the enemies can move
-    this.speedMin = 40;
+    this.speedMax = 40; // max speed the enemies can move
+    this.speedMin = 200;
 
     // set enemy's speed at random between max and min enemy speed
     this.speed = Math.floor((Math.random() * this.speedMax) + this.speedMin);
@@ -33,8 +33,10 @@ Enemy.prototype.update = function(dt) {
 
     // Re-initiate enemy's position once it moves out of the field.
     if ( this.x > xMax ) {
+        var delay = 2000;
         this.x = -100;
         this.speed = Math.floor((Math.random() * this.speedMax) + this.speedMin);
+        console.log("enemy has reached the end of the street");
     }
 
     // Handle Collisions
@@ -60,7 +62,7 @@ Enemy.prototype.render = function() {
 var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 0;
-    this.y = 435;
+    this.y = 380;
     this.speed = 10;
     this.score = 0;
 };
@@ -84,6 +86,12 @@ Player.prototype.restart = function() {
 
 };
 
+Player.prototype.increaseScore = function(pts) {
+    player.score += pts;
+    console.log(player.score);
+    $('#scoreNum').text(player.score);
+}
+
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -92,28 +100,30 @@ Player.prototype.render = function() {
 
 Player.prototype.handleInput = function(key) {
 
-    var stride = 40; // pixels to displace each time player moves
+    var strideX = 505/5; // pixels to displace each time player moves horizontally
+    var strideY = 510/6; // pixels to displace each time player moves vertically
+
 
     // bind keyboard keys to player's motion. And only allow player to move within field.
     switch(key){
         case 'left':
             if( this.x > 0 ) {
-                this.x -= stride;
+                this.x -= strideX;
             }
             break;
         case 'right':
             if (this.x < 400 ) {
-                this.x += stride;
+                this.x += strideX;
             }
             break;
         case 'up':
             if( this.y > 0  ) {
-                this.y -= stride;
+                this.y -= strideY;
             }
             break;
         case 'down':
             if( this.y < 395) {
-                this.y += stride;
+                this.y += strideY;
             }
             break;
     }
@@ -139,7 +149,7 @@ Gem.prototype.update = function() {
     if( Math.abs( this.x - player.x) < offsetPickup && Math.abs( this.y - player.y) < offsetPickup){
         console.log("Just picked up a Gem");
         this.x = -100; // remove from field
-        increaseScore(this.value);
+        player.increaseScore(this.value);
         delete this;
     }
 
@@ -173,16 +183,11 @@ blueGem.prototype.render = function() {
 };
 
 
-var increaseScore = function(pts) {
-    player.score += pts;
-    console.log(player.score);
-}
-
 /* Instantiating Game Objects */
 
 // Project instruction: Place all enemy objects in an array called allEnemies
 var allEnemies = [];
-for(var i = 0; i < 1; i++){
+for(var i = 0; i < 3; i++){
     allEnemies.push(new Enemy(i));
 }
 
