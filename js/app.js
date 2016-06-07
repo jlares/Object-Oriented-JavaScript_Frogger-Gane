@@ -1,4 +1,7 @@
-// Enemies our player must avoid
+/**
+ * @description create an Enemy object
+ * @returns Enemy object
+ */
 var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -13,12 +16,10 @@ var Enemy = function() {
     // start enemies position at random, but only in the street
     this.y = Math.floor((Math.random() * yMax) + yMin);
     // make sure that enemy vertical position does not overlap
-    this.speedMax = 40; // max speed the enemies can move
-    this.speedMin = 200;
-
+    this.speedMin = 60;
+    this.speedMax = 200; // max speed the enemies can move
     // set enemy's speed at random between max and min enemy speed
     this.speed = Math.floor((Math.random() * this.speedMax) + this.speedMin);
-
  };
 
 // Update the enemy's position, required method for game
@@ -31,12 +32,20 @@ Enemy.prototype.update = function(dt) {
     // delete Enemy objects once they move out of the field
     var xMax = 400; // rightmost end of field
 
-    // Re-initiate enemy's position once it moves out of the field.
+    // Restart enemy's position once it moves out of the field.
     if ( this.x > xMax ) {
-        var delay = 2000;
+        // console.log("Enemy has reached the end of the street") // use for debugging
         this.x = -100;
-        this.speed = Math.floor((Math.random() * this.speedMax) + this.speedMin);
-        console.log("enemy has reached the end of the street");
+        this.speed = 0;
+        var minDelay = 500;
+        var maxDelay = 1500;
+        var delay = Math.floor((Math.random() * maxDelay) + minDelay);
+        var that = this; // function setTimeout() points 'this' to global
+        setTimeout(function() {
+            //console.log(that.speedMax); // use for debugging
+            that.speed = Math.floor((Math.random() * that.speedMax) + that.speedMin);
+        }, delay);
+
     }
 
     // Handle Collisions
@@ -45,6 +54,8 @@ Enemy.prototype.update = function(dt) {
             Math.abs(player.y - this.y) < collisionOffset){
         //console.log("a collision happened!");
         player.restart(); // returns player to initial position and lowers its score
+        player.score -= 20;
+        $('#scoreNum').text(player.score);
     }
 
 };
@@ -59,9 +70,15 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+
+/**
+ * @description create a player object
+ * @returns Player object
+ */
 var Player = function() {
+
     this.sprite = 'images/char-boy.png';
-    this.x = 0;
+    this.x = 200; // center of x-axis in the field
     this.y = 380;
     this.speed = 10;
     this.score = 0;
@@ -70,25 +87,32 @@ var Player = function() {
 Player.prototype.update = function(dt) {
 
     // reset game if player reaches the water
-    var delay = 500; // 0.5 sec
+    var delay = 0; // 0.5 sec
     if( this.y < 10 ){
-        console.log("REACHED GOAL")
-        setTimeout(function() {
-            player.restart();
-        }, delay);
+        this.restart();
     }
 
 };
 
 Player.prototype.restart = function() {
-    this.x = 0;
+    this.x = 200;
     this.y = 400;
+
+    allGems = [];
+    allGems.push(new blueGem());
+    allGems.push(new greenGem());
+    allGems.push(new greenGem());
+
+
+
+
+
 
 };
 
 Player.prototype.increaseScore = function(pts) {
     player.score += pts;
-    console.log(player.score);
+    // console.log(player.score); // use for debugging
     $('#scoreNum').text(player.score);
 }
 
@@ -122,7 +146,7 @@ Player.prototype.handleInput = function(key) {
             }
             break;
         case 'down':
-            if( this.y < 395) {
+            if( this.y < 380) {
                 this.y += strideY;
             }
             break;
@@ -130,14 +154,17 @@ Player.prototype.handleInput = function(key) {
 
 };
 
-// Gem class
+/**
+ * @description create a Gem object
+ * @returns Gem object
+ */
 var Gem = function() {
 
-    var yMax = 235; // end position where Enemies can appear/move
+    var yMax = 200; // end position where Enemies can appear/move
     var yMin = 40; // start position where Enemies can appear/move
     var xMin = 0;
     var xMax = 400;
-    this.x = Math.floor((Math.random() * yMax) + yMin);
+    this.x = Math.floor((Math.random() * xMax) + xMin);
     this.y = Math.floor((Math.random() * yMax) + yMin);
 
 };
@@ -145,9 +172,9 @@ var Gem = function() {
 Gem.prototype.update = function() {
 
     // Handle pickups
-    var offsetPickup = 35;
+    var offsetPickup = 55;
     if( Math.abs( this.x - player.x) < offsetPickup && Math.abs( this.y - player.y) < offsetPickup){
-        console.log("Just picked up a Gem");
+        //console.log("Just picked up a Gem"); // use for debugging
         this.x = -100; // remove from field
         player.increaseScore(this.value);
         delete this;
@@ -156,7 +183,13 @@ Gem.prototype.update = function() {
 };
 
 
-// Green Gem subclass
+
+
+/**
+ * @description create a green Gem
+ * @constructor Gem
+ * @returns greenGem object
+ */
 var greenGem = function(){
     Gem.call(this);
     this.sprite = 'images/gem-green.png';
@@ -169,7 +202,12 @@ greenGem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Blue Gem subclass
+
+/**
+ * @description create a blue Gem
+ * @constructor Gem
+ * @returns blueGem object
+ */
 var blueGem = function(){
     Gem.call(this);
     this.sprite = 'images/gem-blue.png';
@@ -216,3 +254,6 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 
 });
+
+
+
