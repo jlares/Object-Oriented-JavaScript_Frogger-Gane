@@ -3,31 +3,27 @@
  * @returns Enemy object
  */
 var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 
-    var yMax = 235; // end position where Enemies can appear/move
-    var yMin = 40; // start position where Enemies can appear/move
+    var yMin = 40;  // min vertical position where Enemies can appear/move
+    var yMax = 235;
     this.x = -100; // start enemies out of field
-    // start enemies position at random, but only in the street
     this.y = Math.floor((Math.random() * yMax) + yMin);
-    // make sure that enemy vertical position does not overlap
-    this.speedMin = 60;
-    this.speedMax = 200; // max speed the enemies can move
+    this.speedMin = 80; // min speed the enemies can move
+    this.speedMax = 500;
     // set enemy's speed at random between max and min enemy speed
     this.speed = Math.floor((Math.random() * this.speedMax) + this.speedMin);
+
+    //TODO: make sure that enemy's vertical position does not overlap with other enemies
  };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+    // Multiplies movements by the dt parameter to ensure that
+    // the game runs at the same speed in all computers
     this.x = this.x + this.speed * dt;
     // delete Enemy objects once they move out of the field
     var xMax = 400; // rightmost end of field
@@ -37,15 +33,16 @@ Enemy.prototype.update = function(dt) {
         // console.log("Enemy has reached the end of the street") // use for debugging
         this.x = -100;
         this.speed = 0;
-        var minDelay = 500;
+
+        // TODO: find a more optimal way of delaying the enemy restart
+        var minDelay = 800; // .8 sec
         var maxDelay = 1500;
         var delay = Math.floor((Math.random() * maxDelay) + minDelay);
-        var that = this; // function setTimeout() points 'this' to global
+        var that = this; // because function setTimeout() points 'this' to global
         setTimeout(function() {
             //console.log(that.speedMax); // use for debugging
             that.speed = Math.floor((Math.random() * that.speedMax) + that.speedMin);
         }, delay);
-
     }
 
     // Handle Collisions
@@ -54,44 +51,36 @@ Enemy.prototype.update = function(dt) {
             Math.abs(player.y - this.y) < collisionOffset){
         //console.log("a collision happened!");
         player.restart(); // returns player to initial position and lowers its score
-        player.score -= 20;
+        player.score -= 100;
         $('#scoreNum').text(player.score);
     }
-
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemy on the screen
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-
-
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
 
 /**
  * @description create a player object
  * @returns Player object
  */
 var Player = function() {
-
+    // This class requires an update(), render() and
+    // a handleInput() method.
     this.sprite = 'images/char-boy.png';
     this.x = 200; // center of x-axis in the field
     this.y = 380;
-    this.speed = 10;
     this.score = 0;
 };
 
 Player.prototype.update = function(dt) {
-
     // reset game if player reaches the water
     var delay = 0; // 0.5 sec
     if( this.y < 10 ){
         this.restart();
     }
-
 };
 
 Player.prototype.restart = function() {
@@ -102,12 +91,6 @@ Player.prototype.restart = function() {
     allGems.push(new blueGem());
     allGems.push(new greenGem());
     allGems.push(new greenGem());
-
-
-
-
-
-
 };
 
 Player.prototype.increaseScore = function(pts) {
@@ -121,12 +104,10 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-
 Player.prototype.handleInput = function(key) {
 
     var strideX = 505/5; // pixels to displace each time player moves horizontally
     var strideY = 510/6; // pixels to displace each time player moves vertically
-
 
     // bind keyboard keys to player's motion. And only allow player to move within field.
     switch(key){
@@ -182,9 +163,6 @@ Gem.prototype.update = function() {
 
 };
 
-
-
-
 /**
  * @description create a green Gem
  * @constructor Gem
@@ -201,7 +179,6 @@ greenGem.prototype.constructor = greenGem;
 greenGem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-
 
 /**
  * @description create a blue Gem
@@ -220,7 +197,6 @@ blueGem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-
 /* Instantiating Game Objects */
 
 // Project instruction: Place all enemy objects in an array called allEnemies
@@ -238,8 +214,6 @@ for(var i = 0; i < 2; i++){
 for( var i = 0; i < 1; i++ ){
     allGems.push(new blueGem(i));
 }
-
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
