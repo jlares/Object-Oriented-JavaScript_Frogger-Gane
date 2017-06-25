@@ -1,13 +1,5 @@
-frontend-nanodegree-arcade-game
-
-===============================
-
-
-
-Students should use this [rubric][1] for self-checking their submission.
-
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
-
+# frontend-nanodegree-arcade-game
+------
 
 # About the game: Frogger
 
@@ -32,6 +24,11 @@ The player can only move within the field.
 The goal of this game is to implement best Object Oriented Javascript practices, including the adequate use of scopes, closures, prototype chains, the object decorator pattern, and classes (functional, prototypal, pseudoclassical, superclasses, and/or pseudoclassical subclasses).
 
 
+This is the [rubric][1] used for self-checking this project's submission.
+
+Instructions on how to get started on the project are also available through [this guide][2]
+
+
 [1]: https://review.udacity.com/#!/projects/2696458597/rubric
-[2]: href="https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true"
+[2]: https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true
 
