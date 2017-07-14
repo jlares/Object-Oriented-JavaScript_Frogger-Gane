@@ -7,6 +7,10 @@ An alternative goal is to increase the player's score by collecting gems that ar
 Blue Gem = 30 points.
 Green Gem  = 20 pints.
 
+## App Screenshot
+
+![Frogger game screenshot](https://github.com/jlares/udacity-object-oriented-javascript/blob/master/images/screenshots/screenshot1.png)
+
 
 # How to Play
 
